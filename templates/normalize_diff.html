@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Нормализация разностного изображения</title>
+    <script>
+    function updateNormImage() {
+        const normLevel = document.getElementById('norm_level').value;
+        // Меняем src картинки, добавляя параметр norm_level и случайный параметр для обхода кэша
+        document.getElementById('norm_img').src = "/get_norm_img?norm_level=" + normLevel + "&_=" + new Date().getTime();
+        document.getElementById('norm_value').value = normLevel;
+    }
+    </script>
+</head>
+<body>
+    <h2>Нормализованное разностное изображение</h2>
+    <div style="display: flex; justify-content: center; align-items: center;">
+        <img id="norm_img" src="{{ url_for('get_norm_img', norm_level=norm_level) }}" alt="Нормализованное изображение" style="max-width: 100%;">
+    </div>
+    <label for="norm_level">Порог нормализации:</label>
+    <input type="range" id="norm_level" name="norm_level" min="0" max="255" value="{{ norm_level }}" oninput="updateNormImage()">
+    <output id="norm_value">{{ norm_level }}</output>
+    <form method="post" action="{{ url_for('find_stp') }}">
+        <input type="hidden" name="norm_level" id="norm_value" value="{{ norm_level }}">
+        <button type="submit">Найти СТП</button>
+    </form>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Проверка боя оружия</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-4 position-relative">
+        <!-- Счетчик стрельб в правом верхнем углу -->
+        {% if current_shot and weapon_name and weapon_number %}
+        <div style="position: absolute; top: 10px; right: 30px; z-index: 1000;">
+            <span class="badge bg-primary" style="font-size: 1.2em; padding: 10px 20px;">
+                Стрельба №{{ current_shot }} | Оружие: {{ weapon_name }} | Номер: {{ weapon_number }}
+            </span>
+        </div>
+        {% endif %}
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+                <a class="nav-link {% if request.path == '/calibration' %}active{% endif %}" href="{{ url_for('calibration') }}">Калибровка</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {% if request.path == '/select_weapon' %}active{% endif %}" href="{{ url_for('select_weapon') }}">Проверка боя</a>
+            </li>
+        </ul>
+        <div class="mt-4">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+            <div id="weapon-params" class="alert alert-info mb-0" style="display:none;">
+                <b>Параметры проверки боя:</b>
+                <span id="param-distance"></span>,
+                <span id="param-overrun"></span>,
+                <span id="param-deviation"></span>,
+                <span id="param-grouping"></span>,
+                <span id="param-sight-replace"></span>,
+                <span id="param-sight-move"></span>
+            </div>
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+</body>
+</html>

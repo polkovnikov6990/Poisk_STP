@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>Калибровка камеры</h3>
+<form method="post">
+    <div class="d-flex justify-content-center align-items-center" style="min-height: 60vh;">
+        <div>
+            <video id="video-calib" width="800" height="600" autoplay style="border:2px solid #333; border-radius:10px;"></video>
+        </div>
+    </div>
+    <div class="mb-3">
+        <label>Ширина видимой области (X, см):</label>
+        <input type="number" step="any" name="cm_x" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label>Высота видимой области (Y, см):</label>
+        <input type="number" step="any" name="cm_y" class="form-control" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Сохранить калибровку</button>
+</form>
+<script>
+    const videoCalib = document.getElementById('video-calib');
+    navigator.mediaDevices.getUserMedia({ video: true })
+        .then(stream => { videoCalib.srcObject = stream; })
+        .catch(err => { alert('Ошибка доступа к камере: ' + err); });
+</script>
+{% endblock %}

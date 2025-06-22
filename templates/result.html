@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+{% block content %}
+{% if weapon %}
+    <div class="alert alert-info">
+        <b>Параметры проверки боя для {{ weapon.short_name }}:</b><br>
+        Дальность до цели: {{ weapon.distance }} {{ weapon.distance_unit }}<br>
+        Превышение: {{ weapon.overrun }} {{ weapon.overrun_unit }}<br>
+        Отклонение: {{ weapon.deviation }} {{ weapon.deviation_unit }}<br>
+        Кучность: {{ weapon.grouping }} {{ weapon.grouping_unit }}<br>
+        Замена целика на 0,25 мм: {{ weapon.sight_replace }} {{ weapon.sight_replace_unit }} на цели<br>
+        Передвижение целика вправо на 1 мм: {{ weapon.sight_move }} {{ weapon.sight_move_unit }} влево на цели
+    </div>
+    <h3>Результат анализа</h3>
+
+{% endif %}
+{% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+{% endif %}
+{% if result %}
+    <div class="mt-4">
+        <img src="{{ url_for('static', filename='uploads/result.jpg') }}" class="img-fluid" alt="Результат">
+        <p>Отклонение по X: {{ result.otklonenie_x|round(2) }} см</p>
+        <p>Отклонение по Y: {{ result.otklonenie_y|round(2) }} см</p>
+    </div>
+{% endif %}
+<form method="post" action="{{ url_for('reset_counter') }}">
+    <button type="submit" class="btn btn-danger mt-4">Сбросить счетчик и очистить фотографии</button>
+</form>
+<form method="post" action="{{ url_for('repeat_sample') }}">
+    <button type="submit" class="btn btn-warning mt-4">Проверить данный образец повторно</button>
+</form>
+<form method="post" action="{{ url_for('next_sample') }}">
+    <button type="submit" class="btn btn-primary mt-2">Проверить следующий образец</button>
+</form>
+{% endblock %}
