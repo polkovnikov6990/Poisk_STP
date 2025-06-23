@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>Выберите оружие</h3>
+<form method="post">
+    
+    <div class="mb-3">
+        <select name="weapon" class="form-select" id="weapon-select" required>
+            {% for w in weapons %}
+                <option value="{{ w.id }}">{{ w.short_name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="mb-3">
+        <label for="weapon_number">Номер образца оружия:</label>
+        <input type="text" class="form-control" id="weapon_number" name="weapon_number" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Далее</button>
+</form>
+
+<script>
+    const weapons = {{ weapons|tojson }};
+    const select = document.getElementById('weapon-select');
+    const paramsDiv = document.getElementById('weapon-params');
+    select.addEventListener('change', function() {
+        const weapon = weapons.find(w => w.id == this.value);
+        if (weapon) {
+            paramsDiv.style.display = '';
+            document.getElementById('param-distance').textContent = `Дальность до цели: ${weapon.distance} ${weapon.distance_unit}`;
+            document.getElementById('param-overrun').textContent = `Превышение: ${weapon.overrun} ${weapon.overrun_unit}`;
+            document.getElementById('param-deviation').textContent = `Отклонение: ${weapon.deviation} ${weapon.deviation_unit}`;
+            document.getElementById('param-grouping').textContent = `Кучность: ${weapon.grouping} ${weapon.grouping_unit}`;
+            document.getElementById('param-sight-replace').textContent = `Замена целика на 0,25 мм: ${weapon.sight_replace} ${weapon.sight_replace_unit} на цели`;
+            document.getElementById('param-sight-move').textContent = `Передвижение целика вправо на 1 мм: ${weapon.sight_move} влево на цели`;
+        } else {
+            paramsDiv.style.display = 'none';
+        }
+    });
+    // Показываем параметры для первого оружия по умолчанию
+    window.addEventListener('DOMContentLoaded', function() {
+        select.dispatchEvent(new Event('change'));
+    });
+</script>
+{% endblock %}

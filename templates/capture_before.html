@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 90vh;">
+    <div class="w-100" style="max-width: 900px;">
+        <h3 class="text-center mb-4">
+            Сделайте захват изображения <span class="text-primary">ДО</span> стрельбы
+        </h3>
+        <form method="post" id="before-form" enctype="multipart/form-data">
+            <div class="d-flex justify-content-center">
+                <video id="video-before" width="960" height="540" autoplay style="border:2px solid #333; border-radius:10px;"></video>
+            </div>
+            <div class="d-flex justify-content-center mt-3 gap-2">
+                <button type="button" class="btn btn-primary w-50" id="capture-before">
+                    Сделать снимок ДО
+                </button>
+                <label class="btn btn-secondary w-50 mb-0">
+                    Загрузить файл
+                    <input type="file" id="file-before" accept="image/*" style="display:none;">
+                </label>
+            </div>
+            <canvas id="canvas-before" width="960" height="540" style="display:none;"></canvas>
+            <input type="hidden" name="image_before" id="image_before">
+        </form>
+    </div>
+</div>
+<script>
+    const video = document.getElementById('video-before');
+    const canvas = document.getElementById('canvas-before');
+    const captureBtn = document.getElementById('capture-before');
+    const imageInput = document.getElementById('image_before');
+    const form = document.getElementById('before-form');
+    const fileInput = document.getElementById('file-before');
+
+    navigator.mediaDevices.getUserMedia({
+        video: { width: { ideal: 960 }, height: { ideal: 540 } }
+    })
+        .then(stream => { video.srcObject = stream; })
+        .catch(err => { alert('Ошибка доступа к камере: ' + err); });
+
+    captureBtn.onclick = function() {
+        canvas.getContext('2d').drawImage(video, 0, 0, 960, 540);
+        imageInput.value = canvas.toDataURL('image/jpeg', 0.8);
+        let tracks = video.srcObject.getTracks();
+        tracks.forEach(track => track.stop());
+        form.submit();
+    };
+
+    fileInput.onchange = function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(ev) {
+            imageInput.value = ev.target.result;
+            form.submit();
+        };
+        reader.readAsDataURL(file);
+    };
+</script>
+{% endblock %}

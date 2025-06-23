@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Нормализация изображения</title>
+</head>
+<body>
+    <h2>Нормализованное изображение</h2>
+    <img src="{{ url_for('static', filename=norm_img) }}" alt="Нормализованное изображение" style="max-width: 400px;"><br>
+    <form method="get" action="{{ url_for('normalize') }}">
+        <label for="norm_level">Порог нормализации:</label>
+        <input type="range" id="norm_level" name="norm_level" min="0" max="255" value="{{ norm_level }}" oninput="this.nextElementSibling.value = this.value">
+        <output>{{ norm_level }}</output>
+        <button type="submit">Применить</button>
+    </form>
+</body>
+</html>
